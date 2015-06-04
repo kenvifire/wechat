@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/test")
 public class HelloController {
-	@RequestMapping(method = RequestMethod.GET)
-	public String printWelcome(ModelMap model) {
-		model.addAttribute("message", "test");
+
+	@RequestMapping("/greeting")
+	public String printWelcome(@RequestParam("echostr")String echostr, ModelMap model) {
+		model.addAttribute("message", echostr);
 		return "hello";
 	}
 }
