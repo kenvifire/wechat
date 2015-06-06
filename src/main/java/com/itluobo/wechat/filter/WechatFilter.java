@@ -17,6 +17,9 @@ import java.util.List;
  * Created by hannahzhang on 15/6/5.
  */
 public class WechatFilter implements Filter{
+
+    private String token;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -25,7 +28,6 @@ public class WechatFilter implements Filter{
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest)  servletRequest;
-        String token = "itluobotoken";
         String timestamp = request.getParameter("timestamp");
         String signature = request.getParameter("signature");
         String nonce = request.getParameter("nonce");
