@@ -32,6 +32,10 @@ public class WechatFilter implements Filter{
         String signature = request.getParameter("signature");
         String nonce = request.getParameter("nonce");
 
+        if(StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(signature)
+                ||StringUtils.isEmpty(nonce)){
+            throw new RuntimeException("invalid auth param");
+        }
 
         List<String> params = Arrays.asList(timestamp,signature,nonce);
         Collections.sort(params);

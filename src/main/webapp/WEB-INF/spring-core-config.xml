@@ -10,4 +10,17 @@
 
     <context:component-scan base-package="com.itluobo.wechat.service" />
 
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+        <property name="suffix">
+            <value>.vm</value>
+        </property>
+    </bean>
+
+    <bean id="velocityConfigurer"
+          class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath" value="/WEB-INF/velocity/"/>
+    </bean>
+
+    <bean id="wechatFilter" class="com.itluobo.wechat.filter.WechatFilter" />
+
 </beans>

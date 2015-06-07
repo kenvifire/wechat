@@ -7,18 +7,4 @@
 
     <context:component-scan base-package="com.itluobo.wechat.mvc"/>
 
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
-        <property name="prefix">
-            <value>/WEB-INF/velocity</value>
-        </property>
-        <property name="suffix">
-            <value>.vm</value>
-        </property>
-    </bean>
-
-    <bean id="velocityConfig"
-          class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
-        <property name="resourceLoaderPath" value="/WEB-INF/velocity/"/>
-    </bean>
-
 </beans>
