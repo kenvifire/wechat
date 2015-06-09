@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class WechatFilter implements Filter{
 
-    private String token;
+    private String token = "itluobotoken";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -37,7 +37,7 @@ public class WechatFilter implements Filter{
             throw new RuntimeException("invalid auth param");
         }
 
-        List<String> params = Arrays.asList(timestamp,signature,nonce);
+        List<String> params = Arrays.asList(timestamp,nonce,token);
         Collections.sort(params);
 
         String paramStr = params.get(0) + params.get(1) + params.get(2);
@@ -45,16 +45,30 @@ public class WechatFilter implements Filter{
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
             messageDigest.update(paramStr.getBytes());
-            String result =new String( messageDigest.digest());
-            if(!token.equals(result)) {
+            String result =byte2hex(messageDigest.digest());
+            if(!signature.equals(result)) {
                 throw new RuntimeException("Invalid request");
             }
 
+            filterChain.doFilter(servletRequest,servletResponse);
         }catch (NoSuchAlgorithmException e){
             e.printStackTrace();
         }
 
 
+    }
+
+    public String byte2hex(byte[] b) {
+        String hs = "";
+        String stmp = "";
+        for (int n = 0; n < b.length; n++) {
+            stmp = (java.lang.Integer.toHexString(b[n] & 0XFF));
+            if (stmp.length() == 1)
+                hs = hs + "0" + stmp;
+            else
+                hs = hs + stmp;
+        }
+        return hs;
     }
 
     @Override
