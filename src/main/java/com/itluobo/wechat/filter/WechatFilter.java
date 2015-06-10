@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by hannahzhang on 15/6/5.
@@ -46,8 +47,9 @@ public class WechatFilter implements Filter{
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-1");
             messageDigest.update(paramStr.getBytes());
             String result =byte2hex(messageDigest.digest());
+
             if(!signature.equals(result)) {
-                throw new RuntimeException("Invalid request");
+                throw new RuntimeException(String.format("Invalid request,signature:%s, result:%s",signature,result));
             }
 
             filterChain.doFilter(servletRequest,servletResponse);
