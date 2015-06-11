@@ -1,5 +1,6 @@
 package com.itluobo.wechat.mvc;
 
+import com.thoughtworks.xstream.XStream;
 import org.apache.log4j.Logger;
 import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Controller;
@@ -14,9 +15,12 @@ import sun.rmi.runtime.Log;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.MarshalledObject;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class WechatController {
@@ -28,15 +32,20 @@ public class WechatController {
 		String echoStr = request.getParameter("echostr");
 
 		if(!StringUtils.isEmpty(echoStr)){
+
 			model.put("message",echoStr);
 			return new ModelAndView("validate",model);
+
 		}else{
 			BufferedReader br = null;
 			try {
 				br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+
+				StringBuilder stringBuilder = new StringBuilder();
+
 				String line;
 				while((line = br.readLine()) != null){
-					logger.info(line);
+					stringBuilder.append(line);
 				}
 				br.close();
 			}catch (IOException e){
@@ -57,4 +66,5 @@ public class WechatController {
 		}
 
 	}
+
 }
