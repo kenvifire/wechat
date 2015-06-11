@@ -1,7 +1,12 @@
 package com.itluobo.wechat.mvc;
 
+import com.itluobo.wechat.domain.UserMessage;
+import com.itluobo.wechat.service.WechatService;
+import com.itluobo.wechat.uitls.IOUtils;
+import com.itluobo.wechat.uitls.MessageUtils;
 import com.thoughtworks.xstream.XStream;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,10 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.rmi.MarshalledObject;
 import java.util.Date;
 import java.util.HashMap;
@@ -24,11 +27,15 @@ import java.util.Map;
 
 @Controller
 public class WechatController {
+
 	private static final Logger logger = Logger.getLogger(WechatController.class);
+
+	@Autowired
+	private WechatService wechatService;
 
 
 	@RequestMapping("/service/message")
-	public ModelAndView printWelcome(HttpServletRequest request, ModelMap model) {
+	public ModelAndView printWelcome(HttpServletRequest request, HttpServletResponse response, ModelMap model) {
 		String echoStr = request.getParameter("echostr");
 
 		if(!StringUtils.isEmpty(echoStr)){
@@ -48,6 +55,15 @@ public class WechatController {
 					stringBuilder.append(line);
 				}
 				br.close();
+				UserMessage userMessage = MessageUtils.parseUserMsg(stringBuilder.toString());
+
+				UserMessage retMsg = wechatService.processMsg(userMessage);
+
+				OutputStream out =  response.getOutputStream();
+				IOUtils.writeMsg(userMessage,out);
+
+				out.close();
+
 			}catch (IOException e){
 				logger.error("error when reading input stream",e);
 			}finally {
