@@ -1,5 +1,6 @@
 package com.itluobo.wechat.filter;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
@@ -12,14 +13,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by hannahzhang on 15/6/5.
  */
 public class WechatFilter implements Filter{
 
-    private String token = "itluobotoken";
+    private static  final String token = "itluobotoken";
+    private static final Logger logger = Logger.getLogger(WechatFilter.class);
+
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -28,10 +31,14 @@ public class WechatFilter implements Filter{
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
         HttpServletRequest request = (HttpServletRequest)  servletRequest;
         String timestamp = request.getParameter("timestamp");
         String signature = request.getParameter("signature");
         String nonce = request.getParameter("nonce");
+
+        logger.info(String.format("request with params[timestamp:%s,signature:%s,nonce:%s]",timestamp,
+                signature,nonce));
 
         if(StringUtils.isEmpty(timestamp) || StringUtils.isEmpty(signature)
                 ||StringUtils.isEmpty(nonce)){
