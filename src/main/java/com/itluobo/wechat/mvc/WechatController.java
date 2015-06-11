@@ -31,15 +31,26 @@ public class WechatController {
 			model.put("message",echoStr);
 			return new ModelAndView("validate",model);
 		}else{
+			BufferedReader br ;
 			try {
-				BufferedReader br = new BufferedReader(new InputStreamReader(request.getInputStream()));
+				br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 				String line;
 				while((line = br.readLine()) != null){
 					logger.info(line);
 				}
+				br.close();
 			}catch (IOException e){
-				e.printStackTrace();
+				logger.error("error when reading input stream",e);
+			}finally {
+				if(br != null){
+					try {
+						br.close();
+					}catch (IOException e){
+						//do nothing here
+					}
+				}
 			}
+
 
 			model.put("message",new Date());
 			return new ModelAndView("validate",model);
