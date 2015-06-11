@@ -31,7 +31,7 @@ public class WechatController {
 			model.put("message",echoStr);
 			return new ModelAndView("validate",model);
 		}else{
-			BufferedReader br ;
+			BufferedReader br = null;
 			try {
 				br = new BufferedReader(new InputStreamReader(request.getInputStream()));
 				String line;
