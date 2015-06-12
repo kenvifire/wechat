@@ -2,28 +2,19 @@ package com.itluobo.wechat.mvc;
 
 import com.itluobo.wechat.domain.UserMessage;
 import com.itluobo.wechat.service.WechatService;
-import com.itluobo.wechat.uitls.IOUtils;
 import com.itluobo.wechat.uitls.MessageUtils;
-import com.thoughtworks.xstream.XStream;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import sun.rmi.runtime.Log;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.rmi.MarshalledObject;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 public class WechatController {
@@ -41,7 +32,7 @@ public class WechatController {
 		if(!StringUtils.isEmpty(echoStr)){
 
 			model.put("message",echoStr);
-			return new ModelAndView("validate",model);
+			return new ModelAndView("message",model);
 
 		}else{
 			BufferedReader br = null;
@@ -59,10 +50,10 @@ public class WechatController {
 
 				UserMessage retMsg = wechatService.processMsg(userMessage);
 
-				OutputStream out =  response.getOutputStream();
-				IOUtils.writeMsg(userMessage,out);
+				response.setContentType("text/html;charset=UTF-8");
 
-				out.close();
+				return new ModelAndView("retMessage","model",retMsg);
+
 
 			}catch (IOException e){
 				logger.error("error when reading input stream",e);
@@ -78,7 +69,7 @@ public class WechatController {
 
 
 			model.put("message",new Date());
-			return new ModelAndView("validate",model);
+			return new ModelAndView("message",model);
 		}
 
 	}
