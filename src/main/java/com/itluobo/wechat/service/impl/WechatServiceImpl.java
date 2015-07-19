@@ -2,7 +2,9 @@ package com.itluobo.wechat.service.impl;
 
 import com.itluobo.wechat.MsgType;
 import com.itluobo.wechat.domain.UserMessage;
+import com.itluobo.wechat.service.RobotService;
 import com.itluobo.wechat.service.WechatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -11,12 +13,15 @@ import org.springframework.stereotype.Service;
 @Service("wechatService")
 public class WechatServiceImpl implements WechatService{
 
+    @Autowired
+    private RobotService robotService;
+
     public UserMessage processMsg(UserMessage userMessage){
 
         UserMessage retMsg = new UserMessage();
         retMsg.setFromUserName(userMessage.getToUserName());
         retMsg.setToUserName(userMessage.getFromUserName());
-        retMsg.setContent("ฤ๚บรฃก");
+        retMsg.setContent(robotService.getResponse(userMessage.getContent()));
         retMsg.setMsgType(MsgType.TEXT.getType());
 
         return retMsg;
