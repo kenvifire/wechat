@@ -1,12 +1,12 @@
 package com.itluobo.wechat.test.util;
 
-import com.itluobo.wechat.domain.UserMessage;
+import com.itluobo.wechat.domain.entity.UserMessage;
 import com.itluobo.wechat.uitls.MessageUtils;
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by hannahzhang on 15/6/11.
+ * Created by kenvizhu on 15/6/11.
  */
 public class MessageUtilsTest {
 

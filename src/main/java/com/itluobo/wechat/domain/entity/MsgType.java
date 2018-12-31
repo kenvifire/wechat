@@ -1,7 +1,7 @@
-package com.itluobo.wechat;
+package com.itluobo.wechat.domain.entity;
 
 /**
- * Created by hannahzhang on 15/6/11.
+ * Created by kenvizhu on 15/6/11.
  */
 public enum MsgType {
 

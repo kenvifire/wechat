@@ -1,9 +1,10 @@
-package com.itluobo.wechat.domain;
+package com.itluobo.wechat.domain.entity;
+
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
- * Created by hannahzhang on 15/6/11.
+ * Created by kenvizhu on 15/6/11.
  */
 
 @XStreamAlias("xml")

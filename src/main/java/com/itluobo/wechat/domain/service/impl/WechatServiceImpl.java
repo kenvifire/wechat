@@ -1,14 +1,14 @@
-package com.itluobo.wechat.service.impl;
+package com.itluobo.wechat.domain.service.impl;
 
-import com.itluobo.wechat.MsgType;
-import com.itluobo.wechat.domain.UserMessage;
 import com.itluobo.wechat.service.RobotService;
-import com.itluobo.wechat.service.WechatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import com.itluobo.wechat.domain.entity.MsgType;
+import com.itluobo.wechat.domain.entity.UserMessage;
+import com.itluobo.wechat.domain.service.WechatService;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by hannahzhang on 15/6/6.
+ * Created by kenvizhu on 15/6/6.
  */
 @Service("wechatService")
 public class WechatServiceImpl implements WechatService{

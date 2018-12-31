@@ -1,11 +1,11 @@
 package com.itluobo.wechat.uitls;
 
-import com.itluobo.wechat.domain.UserMessage;
+import com.itluobo.wechat.domain.entity.UserMessage;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 /**
- * Created by hannahzhang on 15/6/11.
+ * Created by kenvizhu on 15/6/11.
  */
 public class MessageUtils {
 
