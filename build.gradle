@@ -36,3 +36,12 @@ dependencies {
     testCompile("junit:junit")
     testCompile("org.springframework.boot:spring-boot-starter-test")
 }
+
+    def timestamp = new Date().format('yyyyMMddHHmmss')
+    print(timestamp)
+
+    jar {
+        version = project.version + timestamp      // define timestamp in a way you like
+        jar.setVersion("00000")
+    }
+
