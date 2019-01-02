@@ -5,7 +5,7 @@ jdk:
 script:
 - "./gradlew build --scan -s"
 env:
-  - SERVER_IP_ADDRESS=43.241.225.147 USER=kenvi
+  - SERVER_IP_ADDRESS=43.241.225.147 USER=kenvi ENV=beta
 
 before_install:
 - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv
@@ -16,4 +16,4 @@ before_install:
 - ssh-add ./deploy_key
 
 after_success:
-  - scp ./build/libs/*.jar $USER@$SERVER_IP_ADDRESS:/usr/$USER/wechat/beta
+  - scp ./build/libs/*.jar $USER@$SERVER_IP_ADDRESS:/usr/$USER/wechat/$ENV
