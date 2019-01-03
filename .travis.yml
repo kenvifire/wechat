@@ -2,19 +2,37 @@ install: gradle wrapper --gradle-version 4.2
 language: java
 jdk:
 - oraclejdk8
-script:
-- "./gradlew build --scan -s"
-env:
-  - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=beta PROJECT=wechat
+jobs:
+  include:
+    - stage: 'Build'
+      script: "./gradlew build --scan -s"
 
-before_install:
-- openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv
-  -in deploy_key.enc -out ./deploy_key -d
-- eval "#(ssh-agent -s)"
-- chmod 600 ./deploy_key
-- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-- ssh-add ./deploy_key
+    - stage: 'Prepare deployment'
+      script:
+        - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv -in deploy_key.enc -out ./deploy_key -d
+        - eval "#(ssh-agent -s)"
+        - chmod 600 ./deploy_key
+        - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - ssh-add ./deploy_key
+        - ssh $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT
 
-after_success:
-  - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
-  - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/deploy.sh $DEPLOY_USER $ENV $PROJECT
+    - stage: 'Deploy Beta'
+      env:
+        - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=beta PROJECT=wechat PORT=8088
+      script:
+        - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
+        - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
+        - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/deploy.sh $DEPLOY_USER $ENV $PROJECT $PORT
+
+    - stage: 'Integration Test'
+      script:
+        - echo 'Integration test'
+
+    - stage: 'Deploy to Prod'
+      env:
+        - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=prod PROJECT=wechat PORT=8080
+        - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=prod PROJECT=wechat PORT=4000
+      script:
+        - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
+        - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
+        - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
