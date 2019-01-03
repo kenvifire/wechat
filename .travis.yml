@@ -1,10 +1,10 @@
-install: gradle wrapper --gradle-version 4.2
-language: java
-jdk:
-- oraclejdk8
 jobs:
   include:
     - stage: 'Build'
+      install: gradle wrapper --gradle-version 4.2
+      language: java
+      jdk:
+        - oraclejdk8
       script: "./gradlew build --scan -s"
 
     - stage: 'Prepare deployment'
@@ -14,7 +14,6 @@ jobs:
         - chmod 600 ./deploy_key
         - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./deploy_key
-        - ssh $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT
 
     - stage: 'Deploy Beta'
       env:
