@@ -4,27 +4,20 @@ jdk:
 install: gradle wrapper --gradle-version 4.2
 jobs:
   include:
-    - stage: 'Build'
-      script: "./gradlew build --scan -s"
-
-    - stage: 'Prepare deployment'
-      script:
-        - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv -in deploy_key.enc -out ./deploy_key -d
-        - eval "#(ssh-agent -s)"
-        - chmod 600 ./deploy_key
-        - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-        - ssh-add ./deploy_key
-
-    - stage: 'Deploy Beta'
-      env:
-        - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=beta PROJECT=wechat PORT=8088
-      script:
+    - stage: 'Build and Packing'
+      script: 
+        - ./gradlew build --scan -s
         - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv -in deploy_key.enc -out ./deploy_key -d
         - eval "#(ssh-agent -s)"
         - chmod 600 ./deploy_key
         - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./deploy_key
         - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
+
+    - stage: 'Deploy Beta'
+      env:
+        - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=beta PROJECT=wechat PORT=8088
+      script:
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/deploy.sh $DEPLOY_USER $ENV $PROJECT $PORT
 
@@ -37,11 +30,5 @@ jobs:
         - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=prod PROJECT=wechat PORT=8080
         - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=prod PROJECT=wechat PORT=4000
       script:
-        - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv -in deploy_key.enc -out ./deploy_key -d
-        - eval "#(ssh-agent -s)"
-        - chmod 600 ./deploy_key
-        - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-        - ssh-add ./deploy_key
-        - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
