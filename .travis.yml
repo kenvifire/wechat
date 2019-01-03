@@ -17,4 +17,4 @@ before_install:
 
 after_success:
   - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
-  - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS "bash" < scripts/deploy.sh $DEPLOY_USER $ENV $PROJECT
+  - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/deploy.sh $DEPLOY_USER $ENV $PROJECT
