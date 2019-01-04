@@ -14,7 +14,7 @@ jobs:
         - chmod 600 ./deploy_key
         - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./deploy_key
-        - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/$ENV
+        - scp ./build/libs/*.jar $DEPLOY_USER@$SERVER_IP_ADDRESS:/usr/$DEPLOY_USER/$PROJECT/package/
 
     - stage: 'Deploy Beta'
       env:
