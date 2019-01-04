@@ -20,6 +20,11 @@ jobs:
       env:
         - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=beta PROJECT=wechat PORT=8088
       script:
+        - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv -in deploy_key.enc -out ./deploy_key -d
+        - eval "#(ssh-agent -s)"
+        - chmod 600 ./deploy_key
+        - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - ssh-add ./deploy_key
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/deploy.sh $DEPLOY_USER $ENV $PROJECT $PORT
 
@@ -32,5 +37,10 @@ jobs:
         - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=prod PROJECT=wechat PORT=8080
         - SERVER_IP_ADDRESS=43.241.225.147 DEPLOY_USER=kenvi ENV=prod PROJECT=wechat PORT=4000
       script:
+        - openssl aes-256-cbc -K $encrypted_94f816c05403_key -iv $encrypted_94f816c05403_iv -in deploy_key.enc -out ./deploy_key -d
+        - eval "#(ssh-agent -s)"
+        - chmod 600 ./deploy_key
+        - echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - ssh-add ./deploy_key
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
         - ssh  $DEPLOY_USER@$SERVER_IP_ADDRESS 'bash -s' < scripts/backup.sh $DEPLOY_USER $ENV $PROJECT $PORT
