@@ -7,7 +7,7 @@ PROJECT=$3
 PORT=$4
 
 cd /usr/${DEPLOY_USER}/${PROJECT}/${ENV}
-cp /usr/${DEPLOY_USER}/${PROJECT}/package/*.jar .
+cp /usr/${DEPLOY_USER}/${PROJECT}/package/*.jar /usr/${DEPLOY_USER}/${PROJECT}/${ENV}/
 
 
 ##
